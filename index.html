@@ -4,359 +4,458 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0f1226" />
-  <title>AI × Chaos Theory Powerball Lab — INSPIRE</title>
-  <meta name="description" content="A playful, data‑driven, single‑file lab that documents our AI + statistics + chaos‑theory heuristics for picking Powerball numbers. Includes methods, findings, interactive generator, and simulations." />
-  <meta property="og:title" content="AI × Chaos Theory Powerball Lab — INSPIRE" />
-  <meta property="og:description" content="We used frequency stats, balance heuristics, and a pinch of chaos theory to craft a smarter‑than‑random pick. Explore the method, run the generator, and simulate!" />
-  <meta property="og:type" content="website" />
+  <title>INSPIRE · AI × Chaos Theory Powerball Lab</title>
+  <meta name="description" content="A stylish, mobile‑first, single‑file lab that documents our AI + statistics + chaos‑theory heuristics for crafting smarter‑than‑random Powerball picks. Includes methods, examples, interactive generator, validator, and charts." />
+  <meta property="og:title" content="INSPIRE · AI × Chaos Theory Powerball Lab" />
+  <meta property="og:description" content="We used frequency stats, balance heuristics, and a pinch of chaos theory to build a smarter‑than‑random pick. Explore the method, run the generator, and simulate!" />
   <style>
     :root{
-      --bg:#0b0e1a;           /* deep night */
-      --panel:#11162b;        /* glassy card */
-      --panel-2:#0f1426;      /* darker card */
-      --ink:#e7ecff;          /* primary text */
-      --muted:#99a3c7;        /* secondary text */
-      --brand:#7c5cff;        /* INSPIRE neon purple */
-      --accent:#00d4ff;       /* cyan */
-      --success:#35d49c;      /* green */
-      --warn:#ffbb33;         /* amber */
-      --danger:#ff5c9c;       /* pink‑red */
-      --ring: 0 0 0 2px rgba(124,92,255,.35), 0 10px 20px rgba(124,92,255,.2);
-      --radius:18px;
-      --shadow:0 12px 30px rgba(0,0,0,.35);
+      --bg:#0b0e1a; --panel:#11162b; --panel-2:#0f1426; --ink:#e7ecff; --muted:#9aa4c9;
+      --brand:#7c5cff; --accent:#00d4ff; --success:#35d49c; --warn:#ffbb33; --danger:#ff5c9c;
+      --ring:0 0 0 2px rgba(124,92,255,.35), 0 10px 20px rgba(124,92,255,.2);
+      --radius:18px; --shadow:0 12px 30px rgba(0,0,0,.35);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{
-      margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(124,92,255,.18), transparent 60%),
-        radial-gradient(1000px 500px at 120% 10%, rgba(0,212,255,.14), transparent 60%),
-        var(--bg);
-      color:var(--ink);
-      line-height:1.55;
-    }
-    a{color:var(--accent); text-decoration:none}
-    a:hover{text-decoration:underline}
-    .container{max-width:1100px;margin:0 auto;padding:28px}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:radial-gradient(1200px 600px at 20% -10%,rgba(124,92,255,.18),transparent 60%),
+                 radial-gradient(1000px 500px at 120% 10%,rgba(0,212,255,.14),transparent 60%),var(--bg);
+      color:var(--ink);line-height:1.55}
+    a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+    .container{max-width:1200px;margin:0 auto;padding:18px 20px 28px}
 
-    /* header */
-    header.hero{position:relative;border-radius:var(--radius);padding:28px 28px 22px;background:linear-gradient(180deg,rgba(17,22,43,.85),rgba(15,20,38,.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="%2300d4ff"/><stop offset="1" stop-color="%237c5cff"/></linearGradient></defs><g opacity="0.06"><circle cx="150" cy="120" r="90" fill="url(%23g)"/><circle cx="460" cy="80" r="60" fill="url(%23g)"/><circle cx="860" cy="150" r="120" fill="url(%23g)"/><circle cx="1060" cy="60" r="40" fill="url(%23g)"/></g></svg>'); background-size:cover; box-shadow:var(--shadow)}
-    .badge{display:inline-flex;gap:8px;align-items:center;background:rgba(124,92,255,.16);border:1px solid rgba(124,92,255,.4);color:#cfd5ff;padding:6px 12px;border-radius:999px;font-weight:600;letter-spacing:.2px}
-    .title{font-size:clamp(28px,5vw,48px);margin:14px 0 6px;line-height:1.1}
-    .subtitle{color:var(--muted);font-size:clamp(14px,2.3vw,18px);max-width:70ch;margin:0}
-    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
-    .btn{border:none;border-radius:12px;padding:12px 16px;font-weight:700;letter-spacing:.3px;background:linear-gradient(180deg, rgba(124,92,255,.95), rgba(124,92,255,.75)); color:white; box-shadow:var(--ring); cursor:pointer}
-    .btn.secondary{background:linear-gradient(180deg, rgba(0,212,255,.92), rgba(0,212,255,.7));}
-    .btn.ghost{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);box-shadow:none}
+    /* top nav */
+    nav.top{position:sticky;top:0;z-index:9;backdrop-filter:saturate(120%) blur(8px);
+      background:linear-gradient(180deg,rgba(11,14,26,.82),rgba(11,14,26,.62));border-bottom:1px solid rgba(255,255,255,.08)}
+    .topwrap{display:flex;gap:16px;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:10px 16px}
+    .brand{display:flex;gap:10px;align-items:center;font-weight:900;letter-spacing:.3px}
+    .brand .dot{width:10px;height:10px;border-radius:999px;background:linear-gradient(180deg,var(--brand),#5531ff);box-shadow:0 0 0 3px rgba(124,92,255,.3)}
+    .navlinks{display:flex;gap:14px;flex-wrap:wrap}
+    .navlinks a{padding:8px 10px;border-radius:10px}
+    .navlinks a:hover{background:rgba(255,255,255,.06)}
 
-    /* grid cards */
-    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;margin-top:22px}
-    @media (max-width:980px){.grid{grid-template-columns:1fr}}
-    .card{background:linear-gradient(180deg, var(--panel), var(--panel-2)); border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow)}
-    .card h3{margin:0 0 10px}
+    /* hero */
+    header.hero{position:relative;border-radius:var(--radius);padding:26px;background:linear-gradient(180deg,rgba(17,22,43,.9),rgba(15,20,38,.94)),
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="%2300d4ff"/><stop offset="1" stop-color="%237c5cff"/></linearGradient></defs><g opacity="0.06"><circle cx="150" cy="120" r="90" fill="url(%23g)"/><circle cx="460" cy="80" r="60" fill="url(%23g)"/><circle cx="860" cy="150" r="120" fill="url(%23g)"/><circle cx="1060" cy="60" r="40" fill="url(%23g)"/></g></svg>');background-size:cover;box-shadow:var(--shadow)}
+    .badge{display:inline-flex;gap:8px;align-items:center;background:rgba(124,92,255,.16);border:1px solid rgba(124,92,255,.4);color:#cfd5ff;padding:6px 12px;border-radius:999px;font-weight:700}
+    .title{font-size:clamp(28px,5vw,52px);margin:14px 0 6px;line-height:1.1}
+    .subtitle{color:var(--muted);font-size:clamp(14px,2.3vw,18px);max-width:75ch;margin:0}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .btn{border:none;border-radius:12px;padding:11px 14px;font-weight:800;letter-spacing:.3px;cursor:pointer;color:#fff}
+    .btn.brand{background:linear-gradient(180deg,rgba(124,92,255,.95),rgba(124,92,255,.78));box-shadow:var(--ring)}
+    .btn.accent{background:linear-gradient(180deg,rgba(0,212,255,.92),rgba(0,212,255,.76))}
+    .btn.ghost{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e9edff}
+
+    /* layout */
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;margin-top:22px}
+    @media (max-width:1020px){.grid{grid-template-columns:1fr}}
+    .card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);padding:18px 18px 20px;box-shadow:var(--shadow)}
+    .card h3{margin:0 0 8px}
+    .muted{color:var(--muted)} .mono{font-family:ui-monospace,Menlo,Consolas,"Courier New",monospace}
     .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
-    .chip{padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);font-weight:600}
-    .muted{color:var(--muted)}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+    .chip{padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);font-weight:700}
 
-    /* number display */
+    /* balls */
     .draw{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .ball{width:48px;height:48px;border-radius:999px;background:#eaeefa;color:#222;display:grid;place-items:center;font-weight:800;box-shadow: inset 0 -2px 0 rgba(0,0,0,.2), 0 6px 14px rgba(0,0,0,.35)}
-    .ball.pb{background:#ff3c3c;color:white}
+    .ball{width:48px;height:48px;border-radius:999px;background:#eaeefa;color:#222;display:grid;place-items:center;font-weight:900;box-shadow:inset 0 -2px 0 rgba(0,0,0,.2),0 6px 14px rgba(0,0,0,.35)}
+    .ball.pb{background:#ff3c3c;color:#fff}
 
-    /* checklist */
-    .checklist{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    /* checklist & controls */
+    .checklist{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
     @media (max-width:640px){.checklist{grid-template-columns:1fr}}
-    .ok{color:var(--success);font-weight:700}
-    .no{color:var(--danger);font-weight:700}
+    .ok{color:var(--success);font-weight:800}
+    .no{color:var(--danger);font-weight:800}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .ctrl{display:grid;gap:4px;min-width:200px}
+    input[type="number"]{width:72px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--ink)}
+    select, input[type="range"]{appearance:none;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--ink)}
 
-    /* histogram */
+    /* canvases */
     .canvas-wrap{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:10px}
+    canvas{max-width:100%;height:auto}
 
-    footer{opacity:.8;margin:26px 0 22px;text-align:center;color:var(--muted)}
+    /* footer */
+    footer{opacity:.85;margin:28px 0 22px;text-align:center;color:var(--muted)}
     footer a{color:#cfd5ff}
   </style>
 </head>
 <body>
+  <nav class="top">
+    <div class="topwrap">
+      <div class="brand"><span class="dot"></span> INSPIRE Powerball Lab</div>
+      <div class="navlinks">
+        <a href="#findings">Findings</a>
+        <a href="#generator">Generator</a>
+        <a href="#validator">Validator</a>
+        <a href="#charts">Charts</a>
+        <a href="#method">Method</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
   <div class="container">
     <header class="hero">
       <span class="badge">🦝 INSPIRE Lab · AI × Chaos Theory × Lotto Science</span>
       <h1 class="title">Powerball Pattern Explorer</h1>
-      <p class="subtitle">We treated Powerball like a chaotic physical system and used **frequency stats, balance heuristics, and a touch of AI** to build a <em>smarter‑than‑random</em> pick. This page documents our method, examples, and an interactive simulator. (Fun science, not a guarantee.)</p>
+      <p class="subtitle">We treated Powerball like a chaotic physical system and used <strong>frequency stats</strong>, <strong>balance heuristics</strong>, and a touch of <strong>AI</strong> to build a <em>smarter‑than‑random</em> pick. This page documents our abstract, findings, methods, and interactive demos. (Fun science, not a guarantee.)</p>
       <div class="hero-actions">
-        <button class="btn" id="copyPick">📋 Copy Our Pick</button>
-        <button class="btn secondary" id="shareBtn">📣 Share</button>
+        <button class="btn brand" id="copyPick">📋 Copy Our Pick</button>
+        <button class="btn accent" id="shareBtn">📣 Share</button>
         <button class="btn ghost" id="rerunSim">🔁 Re‑run Simulation</button>
       </div>
     </header>
 
+    <!-- FINDINGS + GENERATOR -->
     <section class="grid" aria-label="Findings and Generator">
       <article class="card" id="findings">
-        <h3>Our Suggested Numbers (Sept 3, 2025)</h3>
-        <p class="muted">Constructed to mirror historical macro‑patterns: hot‑number bias, low/mid/high spread, 3‑odd/2‑even parity, and a mid‑range sum.</p>
-        <div class="draw" id="fixedDraw" role="group" aria-label="Our pick">
-          <!-- balls inserted by JS -->
-        </div>
+        <h3>Findings — TL;DR</h3>
+        <p class="muted">Across historical Wednesday draws, winners most often exhibit: (1) a <strong>spread</strong> across low/mid/high ranges, (2) a <strong>balanced odd/even</strong> mix (usually 3/2 or 2/3), (3) a <strong>mid‑range sum</strong> of white balls, and (4) recurring clusters of so‑called <em>hot numbers</em>. We lean into those macro‑patterns when building a ticket.</p>
+        <h4 style="margin:.4rem 0 .6rem">Showcase Pick (Sept 3, 2025)</h4>
+        <div class="draw" id="fixedDraw" role="group" aria-label="Our pick"></div>
         <div class="checklist" id="fixedChecklist"></div>
         <div class="chips">
-          <span class="chip">Low/Mid/High: 2 / 1 / 2</span>
-          <span class="chip">Odd/Even: 3 / 2</span>
-          <span class="chip">Target Sum: 140–190</span>
-          <span class="chip">PB Hot Nods: 4, 10, 24</span>
+          <span class="chip">Low/Mid/High target: 2 / 1 / 2</span>
+          <span class="chip">Odd/Even target: 3 / 2</span>
+          <span class="chip">Sum target: 140–190</span>
+          <span class="chip">PB bias nods: 4, 10, 21, 24</span>
         </div>
       </article>
 
       <aside class="card" id="generator">
-        <h3>Generate a Constrained Pick</h3>
-        <p class="muted">Create a candidate that follows the same heuristics. Use it as variation or a second ticket.</p>
-        <div class="draw" id="genDraw" style="margin-top:6px"></div>
+        <h3>Interactive Generator</h3>
+        <p class="muted">Craft variations that follow the same heuristics. Tweak constraints below, then generate candidates.</p>
+        <div class="row" style="margin:6px 0 10px">
+          <div class="ctrl"><label>Heuristic Mode</label>
+            <select id="mode">
+              <option value="balanced">Balanced (default)</option>
+              <option value="hot">Aggressive Hot Bias</option>
+              <option value="rebound">Cold Rebound (mix in coldies)</option>
+            </select>
+          </div>
+          <div class="ctrl"><label>Sum Window <span id="sumLabel" class="muted"></span></label>
+            <input id="sumMin" type="range" min="100" max="170" value="140" />
+            <input id="sumMax" type="range" min="171" max="230" value="190" />
+          </div>
+          <div class="ctrl"><label>Parity</label>
+            <select id="parity">
+              <option value="any">Any (2/3 or 3/2 preferred)</option>
+              <option value="32">Force 3 odd / 2 even</option>
+              <option value="23">Force 2 odd / 3 even</option>
+            </select>
+          </div>
+          <div class="ctrl"><label>Low/Mid/High Split</label>
+            <select id="lmh">
+              <option value="212">2 / 1 / 2 (favored)</option>
+              <option value="221">2 / 2 / 1</option>
+              <option value="122">1 / 2 / 2</option>
+              <option value="any">Any spread</option>
+            </select>
+          </div>
+        </div>
+        <div class="draw" id="genDraw"></div>
         <div class="checklist" id="genChecklist"></div>
-        <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
-          <button class="btn" id="newPick">✨ New Candidate</button>
+        <div class="row" style="margin-top:10px">
+          <button class="btn brand" id="newPick">✨ New Candidate</button>
           <button class="btn ghost" id="copyGen">📋 Copy</button>
         </div>
       </aside>
     </section>
 
-    <section class="grid" style="margin-top:22px" aria-label="Method & Simulation">
-      <article class="card">
-        <h3>Method — Scientific Vibes, Street‑Smart Heuristics</h3>
-        <ol>
-          <li><strong>Frequency bias (“hot” numbers):</strong> tilt selection toward numbers with historically higher hit counts (e.g., <span class="mono">21, 23, 33, 61, 69</span> for whites; <span class="mono">4, 10, 21, 24</span> for Powerball). No mysticism — just acknowledging clustering occurs in long random runs.</li>
-          <li><strong>Balanced composition:</strong> favor two <em>low</em> (1–23), one <em>mid</em> (24–46), two <em>high</em> (47–69). Combinations spread across the field appear far more often than all‑low or all‑high clumps.</li>
-          <li><strong>Parity mix:</strong> target <strong>3 odd / 2 even</strong> or <strong>2 odd / 3 even</strong> among the five white balls. All‑odd or all‑even is rare.</li>
-          <li><strong>Sum window:</strong> keep the white‑ball sum in a mid band (we aim ~<strong>140–190</strong>). Extremely low or high totals are uncommon.</li>
-          <li><strong>Chaos‑system humility:</strong> each draw is a sensitive physical process. We don’t predict — we <em>shape</em> a pick toward historically dense regions of the “outcome space.”</li>
-        </ol>
-        <p class="muted">TL;DR: We don’t beat the odds — we avoid unusually unlikely structures. It’s still luck, just better framed luck.</p>
+    <!-- VALIDATOR + EXAMPLES -->
+    <section class="grid" style="margin-top:22px" aria-label="Validator and Examples">
+      <article class="card" id="validator">
+        <h3>What‑If Validator</h3>
+        <p class="muted">Enter your own numbers and see how they score against the heuristic checks. We also plot them across the 1–69 field for a quick visual spread check.</p>
+        <div class="row">
+          <div class="ctrl"><label>White #1</label><input type="number" id="n1" min="1" max="69" value="8"></div>
+          <div class="ctrl"><label>White #2</label><input type="number" id="n2" min="1" max="69" value="21"></div>
+          <div class="ctrl"><label>White #3</label><input type="number" id="n3" min="1" max="69" value="32"></div>
+          <div class="ctrl"><label>White #4</label><input type="number" id="n4" min="1" max="69" value="52"></div>
+          <div class="ctrl"><label>White #5</label><input type="number" id="n5" min="1" max="69" value="61"></div>
+          <div class="ctrl"><label>Powerball</label><input type="number" id="npb" min="1" max="26" value="10"></div>
+        </div>
+        <div class="row" style="margin:10px 0 6px">
+          <button class="btn brand" id="validate">✅ Validate</button>
+          <button class="btn ghost" id="plotBtn">📈 Plot Spread</button>
+        </div>
+        <div class="checklist" id="valChecklist"></div>
+        <div class="canvas-wrap" style="margin-top:10px"><canvas id="spread" width="680" height="120" aria-label="Spread plot"></canvas></div>
       </article>
 
-      <aside class="card">
-        <h3>Simulation — Sum Distributions</h3>
-        <p class="muted">Compare <em>purely random</em> picks vs. our <em>constrained</em> heuristic picks. We generate 600 samples and chart white‑ball sums.</p>
-        <div class="canvas-wrap">
-          <canvas id="chart" width="680" height="260" role="img" aria-label="Histogram of white-ball sums for random vs constrained samples"></canvas>
-        </div>
-        <div class="chips"><span class="chip">Random ▶︎ wider spread</span><span class="chip">Constrained ▶︎ mid‑band hump</span></div>
+      <aside class="card" id="examples">
+        <h3>Examples & Notes</h3>
+        <ul>
+          <li><strong>Hot Numbers (whites):</strong> 21, 23, 33, 61, 69 (plus 24, 32, 52, 62) often show up in long‑run stats.
+          <li><strong>Hot PB:</strong> 4, 10, 21, 24 have been frequent red balls historically.</li>
+          <li><strong>Spread beats clump:</strong> Winners rarely cluster all five whites exclusively low or high; mixed ranges dominate.</li>
+          <li><strong>Parity:</strong> All‑odd or all‑even is uncommon; 3/2 or 2/3 is typical.</li>
+          <li><strong>Sum band:</strong> White‑ball sums most often live between ~140 and ~190.</li>
+        </ul>
+        <p class="muted">These aren’t guarantees; they’re the <em>shape</em> of the historical outcome space. Our generator aims for the densest parts of that space.</p>
       </aside>
     </section>
 
-    <section class="card" style="margin-top:22px" aria-label="FAQ">
-      <h3>FAQ</h3>
-      <details>
-        <summary><strong>Is this a prediction?</strong></summary>
-        <p>No. This is a <em>heuristic</em> that generates combinations aligned with historical macro‑patterns. A single exact outcome is still 1 in 292,201,338. Play for fun, play responsibly.</p>
-      </details>
-      <details>
-        <summary><strong>What’s the exact pick you’re sharing?</strong></summary>
-        <p>Our showcase pick for the Wed, Sept 3, 2025 draw is <span class="mono">21 – 23 – 32 – 52 – 61 | PB 10</span>.</p>
-      </details>
-      <details>
-        <summary><strong>Can I tweak the rules?</strong></summary>
-        <p>Sure — fork this page and change the arrays / thresholds inside the single file. Everything is self‑contained.</p>
-      </details>
+    <!-- CHARTS -->
+    <section class="card" id="charts" style="margin-top:22px" aria-label="Charts & Diagrams">
+      <h3>Charts & Diagrams</h3>
+      <p class="muted">We simulate samples and chart what our constraints actually do compared to pure randomness.</p>
+      <div class="grid">
+        <div class="card">
+          <h4>Histogram · White‑Ball Sum</h4>
+          <div class="canvas-wrap"><canvas id="hist" width="720" height="260"></canvas></div>
+          <div class="chips"><span class="chip">Random ▶︎ wider spread</span><span class="chip">Constrained ▶︎ mid‑band hump</span></div>
+        </div>
+        <div class="card">
+          <h4>Donut · Parity Mix (sampled)</h4>
+          <div class="canvas-wrap"><canvas id="donut" width="360" height="260"></canvas></div>
+          <div class="chips"><span class="chip">Shows % of 3/2 vs 2/3 vs other</span></div>
+        </div>
+      </div>
+      <div class="grid" style="margin-top:22px">
+        <div class="card">
+          <h4>Top 12 Whites (frequency in constrained sampling)</h4>
+          <div class="canvas-wrap"><canvas id="bars" width="720" height="260"></canvas></div>
+          <div class="chips"><span class="chip">Derived from your current settings</span></div>
+        </div>
+        <div class="card">
+          <h4>Chaos Sketch</h4>
+          <p class="muted">A whimsical attractor‑style sketch reminding us each draw is a sensitive physical process — we navigate tendencies, not certainties.</p>
+          <div class="canvas-wrap"><canvas id="attractor" width="360" height="260"></canvas></div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="btn ghost" id="recompute">🔬 Recompute Stats from 5,000 Samples</button></div>
+    </section>
+
+    <!-- METHOD & FAQ -->
+    <section class="grid" style="margin-top:22px" aria-label="Method and FAQ">
+      <article class="card" id="method">
+        <h3>Method — From Paper to Playground</h3>
+        <ol>
+          <li><strong>Frequency tilt:</strong> We bias toward repeatedly drawn numbers ("hot list") when sampling; tuneable via the <em>Heuristic Mode</em>.</li>
+          <li><strong>Composition rules:</strong> Favor splits like 2 low / 1 mid / 2 high; keep parity near 3/2 or 2/3.</li>
+          <li><strong>Sum banding:</strong> Prefer white‑ball sums within a mid corridor (tunable sliders).</li>
+          <li><strong>Independent PB:</strong> Red ball is chosen with a mild bias to historically active values.</li>
+          <li><strong>Chaos humility:</strong> We don’t predict a specific outcome; we steer away from structurally unlikely tickets.</li>
+        </ol>
+        <p class="muted">Everything here is <strong>self‑contained</strong> — one file, no external libraries. Fork it, remix it, ship it.</p>
+      </article>
+      <aside class="card" id="faq">
+        <h3>FAQ</h3>
+        <details><summary><strong>Is this financial advice?</strong></summary><p>Nope — it’s a playful, educational demo about patterns and randomness. Odds remain astronomical.</p></details>
+        <details><summary><strong>Exact pick you’re sharing?</strong></summary><p><span class="mono">21 – 23 – 32 – 52 – 61 | PB 10</span> for Wed, Sept 3, 2025.</p></details>
+        <details><summary><strong>Can I use my own hot list?</strong></summary><p>Yes: adjust the <span class="mono">HOT_WHITE</span> and <span class="mono">HOT_PB</span> arrays in the source.</p></details>
+      </aside>
     </section>
 
     <footer>
-      Built with ❤️ by <strong>INSPIRE</strong> · This is a playful thought‑experiment, not financial advice. · MIT License · <a href="https://github.com/officialinspire" target="_blank" rel="noopener">GitHub/officialinspire</a>
+      Built with ❤️ by <strong>INSPIRE</strong> · MIT License · <a href="https://github.com/officialinspire" target="_blank" rel="noopener">GitHub/officialinspire</a>
     </footer>
   </div>
 
   <script>
-    // ======= CONFIG =======
+    // ======= CONFIG (editable) =======
     const OUR_PICK = { whites:[21,23,32,52,61], pb:10 };
+    const HOT_WHITE = [21,23,33,61,69,62,24,32,52,11,7,3,27,40];
+    const COLD_WHITE = [49,26,13,46,65];
+    const HOT_PB = [4,10,21,24,18,25,14,20];
 
-    // White ball hot list & PB hot list (illustrative, based on long‑run tendencies)
-    const HOT_WHITE = [21,23,33,61,69,62,24,32,52,11,7,3];
-    const HOT_PB    = [4,10,21,24,18,25,14,20];
+    // ======= UTIL =======
+    const sum = a => a.reduce((x,y)=>x+y,0);
+    const countOdd = a => a.filter(n=>n%2).length;
+    const rng = (min,max)=>min+Math.floor(Math.random()*(max-min+1));
+    const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 
-    // Helpers
-    const sum = arr => arr.reduce((a,b)=>a+b,0);
-    const countOdd = arr => arr.filter(n=>n%2).length;
+    function flash(el){ el.style.transition='box-shadow .35s ease'; el.style.boxShadow='0 0 0 4px rgba(0,212,255,.45)'; setTimeout(()=>{el.style.boxShadow='none'},360) }
 
-    // UI helpers
+    // ======= RENDER HELPERS =======
     function renderBalls(node, nums, pb){
-      node.innerHTML = '';
-      nums.forEach(n=>{
-        const el = document.createElement('div');
-        el.className = 'ball';
-        el.textContent = n;
-        node.appendChild(el);
-      });
-      const red = document.createElement('div');
-      red.className = 'ball pb';
-      red.textContent = pb;
-      node.appendChild(red);
+      node.innerHTML='';
+      nums.forEach(n=>{ const d=document.createElement('div'); d.className='ball'; d.textContent=n; node.appendChild(d); });
+      const r=document.createElement('div'); r.className='ball pb'; r.textContent=pb; node.appendChild(r);
     }
-    function renderChecklist(node, nums, pb){
-      const low = nums.filter(n=>n<=23).length;
-      const mid = nums.filter(n=>n>=24 && n<=46).length;
-      const high = nums.filter(n=>n>=47).length;
-      const parityOK = (countOdd(nums)===3 || countOdd(nums)===2);
-      const sumVal = sum(nums);
-      const sumOK = (sumVal>=140 && sumVal<=190);
-      const spreadOK = (low===2 && mid===1 && high===2);
-      node.innerHTML = `
-        <div>Low/Mid/High: <strong>${low}/${mid}/${high}</strong> · <span class="${spreadOK?'ok':'no'}">${spreadOK?'OK':'Off'}</span></div>
+    function renderChecklist(node, nums, pb, sumMin=140, sumMax=190){
+      const low=nums.filter(n=>n<=23).length, mid=nums.filter(n=>n>=24&&n<=46).length, high=nums.filter(n=>n>=47).length;
+      const parityOK=(countOdd(nums)===3||countOdd(nums)===2);
+      const sumVal=sum(nums), sumOK=(sumVal>=sumMin&&sumVal<=sumMax);
+      const targetSplit = (low===2&&mid===1&&high===2);
+      node.innerHTML=`
+        <div>Low/Mid/High: <strong>${low}/${mid}/${high}</strong> · <span class="${targetSplit?'ok':'no'}">${targetSplit?'OK':'Off'}</span></div>
         <div>Odd/Even: <strong>${countOdd(nums)}/${5-countOdd(nums)}</strong> · <span class="${parityOK?'ok':'no'}">${parityOK?'OK':'Off'}</span></div>
         <div>Sum: <strong>${sumVal}</strong> · <span class="${sumOK?'ok':'no'}">${sumOK?'OK':'Off'}</span></div>
         <div>PB bias: <span class="${HOT_PB.includes(pb)?'ok':'no'}">${HOT_PB.includes(pb)?'nod to PB hot list':'neutral'}</span></div>`;
     }
 
-    // Weighted pick from a range, with optional hot‑list bias
-    function pickDistinct(count, rangeMin, rangeMax, hot=[], hotWeight=0.55){
-      const pool = [];
-      for(let n=rangeMin;n<=rangeMax;n++) pool.push(n);
-      const chosen = new Set();
+    // ======= PICKING =======
+    function pickDistinct(count, min, max, preferred=[], w=0.55){
+      const chosen=new Set(); const pool=[...Array(max-min+1)].map((_,i)=>min+i);
       while(chosen.size<count){
-        let useHot = (Math.random()<hotWeight) && hot.some(h=>h>=rangeMin && h<=rangeMax);
-        let candidate = useHot ? hot[Math.floor(Math.random()*hot.length)] : pool[Math.floor(Math.random()*pool.length)];
-        if(candidate>=rangeMin && candidate<=rangeMax) chosen.add(candidate);
+        let useHot=Math.random()<w && preferred.some(h=>h>=min&&h<=max);
+        let cand=useHot? preferred[Math.floor(Math.random()*preferred.length)] : pool[Math.floor(Math.random()*pool.length)];
+        if(cand>=min&&cand<=max) chosen.add(cand);
       }
-      return Array.from(chosen);
+      return [...chosen];
     }
 
-    function generateConstrained(){
-      // 2 low (1–23), 1 mid (24–46), 2 high (47–69)
-      let whites, pb;
-      let tries=0;
+    function generateConstrained(settings){
+      const {sumMin,sumMax,parity,split,mode}=settings;
+      const hotW = mode==='hot'?0.7: mode==='rebound'?0.5: 0.58;
+      const hotList = mode==='rebound' ? HOT_WHITE.concat(COLD_WHITE) : HOT_WHITE;
+
+      let lows=2,mids=1,highs=2;
+      if(split==='221'){ lows=2;mids=2;highs=1; }
+      if(split==='122'){ lows=1;mids=2;highs=2; }
+      if(split==='any'){ lows=rng(1,3); mids=rng(0,3); highs=5-lows-mids; if(highs<0){highs=0; mids=5-lows} }
+
+      let tries=0, whites=[], pb=10;
       do{
         tries++;
-        const low = pickDistinct(2,1,23,HOT_WHITE,0.6);
-        const mid = pickDistinct(1,24,46,HOT_WHITE,0.55);
-        const high = pickDistinct(2,47,69,HOT_WHITE,0.55);
-        whites = [...low,...mid,...high].sort((a,b)=>a-b);
-        const odds = countOdd(whites);
-        const okParity = (odds===3 || odds===2);
-        const s = sum(whites);
-        if(!okParity || s<140 || s>190) continue; // resample
-        // PB with bias
-        pb = (Math.random()<0.38) ? HOT_PB[Math.floor(Math.random()*HOT_PB.length)] : (1+Math.floor(Math.random()*26));
+        const low = pickDistinct(lows,1,23,hotList,hotW);
+        const mid = pickDistinct(mids,24,46,hotList,hotW);
+        const high= pickDistinct(highs,47,69,hotList,hotW);
+        whites=[...low,...mid,...high].sort((a,b)=>a-b);
+        const s=sum(whites); const odds=countOdd(whites);
+        const parityOK = parity==='any' ? (odds===3||odds===2) : (parity==='32'? odds===3 : odds===2);
+        if(s<sumMin||s>sumMax) continue;
+        if(!parityOK) continue;
+        pb = (Math.random()<0.4)? HOT_PB[Math.floor(Math.random()*HOT_PB.length)] : rng(1,26);
         break;
-      } while(tries<500);
-      return {whites, pb};
+      }while(tries<600);
+      return {whites,pb};
     }
 
-    // Histogram simulation
-    function simulate(count=600, mode='constrained'){
-      const sums=[];
+    // ======= SIM =======
+    function simulate(count, settings, mode){
+      const sums=[], parCombos={"3/2":0,"2/3":0,other:0};
       for(let i=0;i<count;i++){
         let pick;
         if(mode==='random'){
-          const bucket = new Set();
-          while(bucket.size<5){ bucket.add(1+Math.floor(Math.random()*69)); }
-          pick = {whites:[...bucket].sort((a,b)=>a-b), pb: 1+Math.floor(Math.random()*26)};
-        } else {
-          pick = generateConstrained();
-        }
+          const set=new Set(); while(set.size<5){ set.add(rng(1,69)); }
+          const whites=[...set].sort((a,b)=>a-b); const pb=rng(1,26); pick={whites,pb};
+        } else pick=generateConstrained(settings);
         sums.push(sum(pick.whites));
+        const o=countOdd(pick.whites); if(o===3) parCombos["3/2"]++; else if(o===2) parCombos["2/3"]++; else parCombos.other++;
       }
-      return sums;
+      return {sums,parCombos};
     }
 
-    function drawHistogram(canvas, sumsRandom, sumsConstrained){
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      const W=canvas.width, H=canvas.height, P=28;
-
-      // bins
-      const bins = 22;
-      const min = 60, max = 260; // reasonable sum window
-      const bw = (W-2*P)/bins;
-      const scale = v => Math.max(0, Math.min(bins-1, Math.floor((v-min)/(max-min)*bins)));
-
-      const makeCounts = (data)=>{
-        const a = new Array(bins).fill(0);
-        data.forEach(v=>{ a[scale(v)]++; });
-        const m = Math.max(...a) || 1;
-        return {a, m};
-      }
-
-      const R = makeCounts(sumsRandom);
-      const C = makeCounts(sumsConstrained);
-      const ymax = Math.max(R.m, C.m);
-
+    // ======= CHARTS (Canvas) =======
+    function drawHistogram(canvas, rand, con){
+      const ctx=canvas.getContext('2d'); const W=canvas.width,H=canvas.height,P=28; ctx.clearRect(0,0,W,H);
+      const bins=22,min=60,max=260,bw=(W-2*P)/bins; const scale=v=>Math.max(0,Math.min(bins-1,Math.floor((v-min)/(max-min)*bins)));
+      function makeCounts(data){ const a=new Array(bins).fill(0); data.forEach(v=>a[scale(v)]++); return {a,m:Math.max(...a)||1}; }
+      const R=makeCounts(rand), C=makeCounts(con), ymax=Math.max(R.m,C.m);
       // axes
-      ctx.strokeStyle = 'rgba(255,255,255,.25)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(P, H-P);
-      ctx.lineTo(W-P, H-P);
-      ctx.moveTo(P, P);
-      ctx.lineTo(P, H-P);
-      ctx.stroke();
-
-      // draw bars
+      ctx.strokeStyle='rgba(255,255,255,.25)'; ctx.beginPath(); ctx.moveTo(P,H-P); ctx.lineTo(W-P,H-P); ctx.moveTo(P,P); ctx.lineTo(P,H-P); ctx.stroke();
       for(let i=0;i<bins;i++){
-        const x = P + i*bw + 1;
-        // random bars (outline)
-        const hr = (R.a[i]/ymax)*(H-2*P);
-        ctx.fillStyle = 'rgba(0,212,255,.35)';
-        ctx.fillRect(x, H-P-hr, bw-2, hr);
-        // constrained bars (overlay)
-        const hc = (C.a[i]/ymax)*(H-2*P);
-        ctx.fillStyle = 'rgba(124,92,255,.6)';
-        ctx.fillRect(x+bw*0.18, H-P-hc, bw*0.64, hc);
+        const x=P+i*bw+1, hr=(R.a[i]/ymax)*(H-2*P), hc=(C.a[i]/ymax)*(H-2*P);
+        ctx.fillStyle='rgba(0,212,255,.35)'; ctx.fillRect(x,H-P-hr,bw-2,hr);
+        ctx.fillStyle='rgba(124,92,255,.6)'; ctx.fillRect(x+bw*0.18,H-P-hc,bw*0.64,hc);
       }
-
-      // labels
-      ctx.fillStyle = 'rgba(255,255,255,.7)';
-      ctx.font = '12px Inter, system-ui, sans-serif';
-      ctx.fillText('Sum of 5 white balls', P, P-8);
-      ctx.fillStyle = 'rgba(0,212,255,.9)'; ctx.fillRect(W-P-220, P+6, 10,10); ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.fillText('Random', W-P-205, P+15);
-      ctx.fillStyle = 'rgba(124,92,255,.9)'; ctx.fillRect(W-P-140, P+6, 10,10); ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.fillText('Constrained', W-P-125, P+15);
+      ctx.fillStyle='rgba(255,255,255,.7)'; ctx.font='12px Inter,system-ui,sans-serif'; ctx.fillText('Sum of 5 white balls',P,P-8);
+      ctx.fillStyle='rgba(0,212,255,.9)'; ctx.fillRect(W-P-220,P+6,10,10); ctx.fillStyle='rgba(255,255,255,.7)'; ctx.fillText('Random',W-P-205,P+15);
+      ctx.fillStyle='rgba(124,92,255,.9)'; ctx.fillRect(W-P-140,P+6,10,10); ctx.fillStyle='rgba(255,255,255,.7)'; ctx.fillText('Constrained',W-P-125,P+15);
     }
 
-    // Initialize UI
-    const fixedDraw = document.getElementById('fixedDraw');
-    const fixedChecklist = document.getElementById('fixedChecklist');
+    function drawDonut(canvas, counts){
+      const ctx=canvas.getContext('2d'); const W=canvas.width,H=canvas.height; ctx.clearRect(0,0,W,H);
+      const total=counts["3/2"]+counts["2/3"]+counts.other; if(!total) return;
+      const parts=[["3/2",'rgba(124,92,255,.9)'],["2/3",'rgba(0,212,255,.9)'],["other",'rgba(255,255,255,.28)']];
+      let start=-Math.PI/2; const cx=W/2, cy=H/2, r=Math.min(W,H)/3.2;
+      parts.forEach(([key,color])=>{ const ang=(counts[key]/total)*Math.PI*2; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,start+ang); ctx.closePath(); ctx.fillStyle=color; ctx.fill(); start+=ang; });
+      ctx.globalCompositeOperation='destination-out'; ctx.beginPath(); ctx.arc(cx,cy,r*0.45,0,Math.PI*2); ctx.fill(); ctx.globalCompositeOperation='source-over';
+      ctx.fillStyle='rgba(255,255,255,.8)'; ctx.font='12px Inter,system-ui,sans-serif';
+      ctx.fillText(`3/2: ${Math.round(counts["3/2"]/total*100)}%`,10,18);
+      ctx.fillText(`2/3: ${Math.round(counts["2/3"]/total*100)}%`,10,36);
+      ctx.fillText(`Other: ${Math.round(counts.other/total*100)}%`,10,54);
+    }
+
+    function drawBars(canvas, freq){
+      const ctx=canvas.getContext('2d'); const W=canvas.width,H=canvas.height,P=34; ctx.clearRect(0,0,W,H);
+      const entries=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,12);
+      const maxv=Math.max(...entries.map(e=>e[1]))||1; const bw=(W-2*P)/entries.length;
+      ctx.strokeStyle='rgba(255,255,255,.25)'; ctx.beginPath(); ctx.moveTo(P,H-P); ctx.lineTo(W-P,H-P); ctx.stroke();
+      entries.forEach(([n,v],i)=>{ const x=P+i*bw+6, h=(v/maxv)*(H-2*P); ctx.fillStyle='rgba(124,92,255,.8)'; ctx.fillRect(x,H-P-h,bw-12,h); ctx.fillStyle='rgba(255,255,255,.8)'; ctx.font='12px Inter'; ctx.fillText(String(n), x+4, H-P+14); });
+    }
+
+    function drawAttractor(canvas){
+      const ctx=canvas.getContext('2d'); const W=canvas.width,H=canvas.height; ctx.clearRect(0,0,W,H);
+      // simple Clifford attractor sketch
+      let x=0.1,y=0.1; const a=-1.4, b=1.6, c=1.0, d=0.7; ctx.fillStyle='rgba(124,92,255,.6)';
+      ctx.translate(W/2,H/2); ctx.globalAlpha=0.6;
+      for(let i=0;i<45000;i++){ const nx=Math.sin(a*y)+c*Math.cos(a*x); const ny=Math.sin(b*x)+d*Math.cos(b*y); x=nx*110; y=ny*110; ctx.fillRect(x,y,1,1);} ctx.setTransform(1,0,0,1,0,0);
+    }
+
+    // ======= UI WIRING =======
+    const fixedDraw=document.getElementById('fixedDraw');
+    const fixedChecklist=document.getElementById('fixedChecklist');
     renderBalls(fixedDraw, OUR_PICK.whites, OUR_PICK.pb);
     renderChecklist(fixedChecklist, OUR_PICK.whites, OUR_PICK.pb);
 
-    // Generator
-    const gen = generateConstrained();
-    const genDraw = document.getElementById('genDraw');
-    const genChecklist = document.getElementById('genChecklist');
-    function setGen(p){ renderBalls(genDraw, p.whites, p.pb); renderChecklist(genChecklist, p.whites, p.pb); }
-    setGen(gen);
+    const modeSel=document.getElementById('mode');
+    const sumMinEl=document.getElementById('sumMin');
+    const sumMaxEl=document.getElementById('sumMax');
+    const paritySel=document.getElementById('parity');
+    const lmhSel=document.getElementById('lmh');
+    const sumLabel=document.getElementById('sumLabel');
+    function labelSum(){ sumLabel.textContent=`${sumMinEl.value}–${sumMaxEl.value}` }
+    sumMinEl.addEventListener('input',()=>{ if(+sumMinEl.value>+sumMaxEl.value-5) sumMinEl.value=+sumMaxEl.value-5; labelSum(); });
+    sumMaxEl.addEventListener('input',()=>{ if(+sumMaxEl.value<+sumMinEl.value+5) sumMaxEl.value=+sumMinEl.value+5; labelSum(); });
+    labelSum();
 
-    document.getElementById('newPick').addEventListener('click', ()=> setGen(generateConstrained()));
-    document.getElementById('copyGen').addEventListener('click', ()=> {
-      const balls = [...genDraw.querySelectorAll('.ball')].map(b=>b.textContent);
-      const txt = balls.slice(0,5).join(' ') + ' | PB ' + balls[5];
-      navigator.clipboard.writeText(txt);
-      flash(genDraw);
+    function currentSettings(){ return { sumMin:+sumMinEl.value, sumMax:+sumMaxEl.value, parity:paritySel.value, split:lmhSel.value, mode:modeSel.value }; }
+
+    const genDraw=document.getElementById('genDraw');
+    const genChecklist=document.getElementById('genChecklist');
+    function setGen(p){ renderBalls(genDraw,p.whites,p.pb); renderChecklist(genChecklist,p.whites,p.pb,+sumMinEl.value,+sumMaxEl.value); }
+    let genPick=generateConstrained(currentSettings()); setGen(genPick);
+
+    document.getElementById('newPick').addEventListener('click',()=>{ genPick=generateConstrained(currentSettings()); setGen(genPick); });
+    document.getElementById('copyGen').addEventListener('click',()=>{ const balls=[...genDraw.querySelectorAll('.ball')].map(b=>b.textContent); const txt=balls.slice(0,5).join(' ')+' | PB '+balls[5]; navigator.clipboard.writeText(txt); flash(genDraw); });
+
+    document.getElementById('copyPick').addEventListener('click',()=>{ const txt=OUR_PICK.whites.join(' ')+' | PB '+OUR_PICK.pb; navigator.clipboard.writeText(txt); flash(fixedDraw); });
+    document.getElementById('shareBtn').addEventListener('click',async()=>{
+      const text=`INSPIRE Powerball Lab — Our pick: ${OUR_PICK.whites.join(' ')} | PB ${OUR_PICK.pb}. Built with AI + chaos‑theory heuristics. https://github.com/officialinspire`;
+      if(navigator.share){ try{ await navigator.share({title:'INSPIRE Powerball Lab', text}); }catch(e){} } else { navigator.clipboard.writeText(text); alert('Copied share text to clipboard!'); }
     });
 
-    // Copy & Share for our fixed pick
-    document.getElementById('copyPick').addEventListener('click', ()=>{
-      const txt = OUR_PICK.whites.join(' ') + ' | PB ' + OUR_PICK.pb;
-      navigator.clipboard.writeText(txt);
-      flash(fixedDraw);
-    });
-    document.getElementById('shareBtn').addEventListener('click', async ()=>{
-      const text = `INSPIRE Powerball Lab — Our pick: ${OUR_PICK.whites.join(' ')} | PB ${OUR_PICK.pb}. Built with AI + chaos‑theory heuristics. https://github.com/officialinspire`;
-      if(navigator.share){ try{ await navigator.share({title:'INSPIRE Powerball Lab', text}); }catch(e){} }
-      else{ navigator.clipboard.writeText(text); alert('Copied share text to clipboard!'); }
-    });
+    // Validator
+    function readVal(){ const v=[+n1.value,+n2.value,+n3.value,+n4.value,+n5.value].sort((a,b)=>a-b); return {whites:v,pb:+npb.value}; }
+    function validateAndShow(){ const {whites,pb}=readVal(); renderChecklist(document.getElementById('valChecklist'), whites, pb, +sumMinEl.value, +sumMaxEl.value); }
+    document.getElementById('validate').addEventListener('click', validateAndShow);
 
-    // Simulation chart
-    const canvas = document.getElementById('chart');
-    function runSim(){
-      const rand = simulate(600,'random');
-      const con  = simulate(600,'constrained');
-      drawHistogram(canvas, rand, con);
+    // Spread plot
+    function plotSpread(){ const {whites}=readVal(); const c=document.getElementById('spread'); const ctx=c.getContext('2d'); const W=c.width,H=c.height,P=28; ctx.clearRect(0,0,W,H);
+      ctx.strokeStyle='rgba(255,255,255,.25)'; ctx.beginPath(); ctx.moveTo(P,H/2); ctx.lineTo(W-P,H/2); ctx.stroke();
+      ctx.fillStyle='rgba(0,212,255,.35)'; ctx.fillRect(P, H/2-12, (W-2*P), 24);
+      ctx.fillStyle='rgba(124,92,255,1)'; whites.forEach(n=>{ const x=P + (n-1)/(69-1)*(W-2*P); ctx.beginPath(); ctx.arc(x,H/2,10,0,Math.PI*2); ctx.fill(); });
+      ctx.fillStyle='rgba(255,255,255,.8)'; ctx.font='12px Inter'; ctx.fillText('1',P-4,H/2+30); ctx.fillText('69',W-P-16,H/2+30);
     }
-    runSim();
-    document.getElementById('rerunSim').addEventListener('click', runSim);
+    document.getElementById('plotBtn').addEventListener('click', plotSpread);
 
-    // tiny visual flash helper
-    function flash(el){
-      el.style.transition='box-shadow .35s ease';
-      el.style.boxShadow='0 0 0 4px rgba(0,212,255,.45)';
-      setTimeout(()=>{el.style.boxShadow='none';}, 360);
+    // Charts initial
+    function runSimAndCharts(){
+      const settings=currentSettings();
+      const rand=simulate(600,settings,'random');
+      const con=simulate(600,settings,'constrained');
+      drawHistogram(document.getElementById('hist'), rand.sums, con.sums);
+      drawDonut(document.getElementById('donut'), con.parCombos);
     }
+
+    function recomputeBars(){
+      const settings=currentSettings();
+      const freq={}; for(let i=1;i<=69;i++) freq[i]=0;
+      for(let i=0;i<5000;i++){ const p=generateConstrained(settings); p.whites.forEach(n=>freq[n]++); }
+      drawBars(document.getElementById('bars'), freq);
+    }
+
+    function drawAll(){ runSimAndCharts(); recomputeBars(); drawAttractor(document.getElementById('attractor')); }
+    drawAll();
+
+    document.getElementById('rerunSim').addEventListener('click', drawAll);
+    document.getElementById('recompute').addEventListener('click', drawAll);
+
   </script>
 </body>
 </html>
